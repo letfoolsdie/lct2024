@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+
 
 import engines
 
@@ -30,3 +32,6 @@ search_engine = engines.ClownDB(
 @app.get("/search")
 async def search(query: str):
     return search_engine.search(query)
+
+
+app.mount("/", StaticFiles(directory="front", html=True), name="static")
