@@ -1,11 +1,13 @@
 ### Инструкция )))
 
+ - Готовим эмбеды из описания видео для qdrant. Пример в ноутбуке qdrant_lct_baseline.ipynb.
+ - Запускаем qdrant: `docker run -p 6333:6333 -p 6334:6334     -v $(pwd)/qdrant_storage:/qdrant/storage:z  qdrant/qdrant`
+ - Далее запускаем fastapi сервер:
+    ```
+    cd src
+    fastapi dev main.py
 
-```
-cd src
-fastapi dev main.py
+    http://127.0.0.1:8000/search?query=test
+    ```
 
-http://127.0.0.1:8000/search?query=test
-```
-
-UI должен быть доступен по http://127.0.0.1:8000/
+    UI должен быть доступен по http://127.0.0.1:8000/

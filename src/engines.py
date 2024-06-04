@@ -5,6 +5,11 @@ import joblib
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+import torch
+from qdrant_client import QdrantClient
+from sentence_transformers import SentenceTransformer
+
+
 class DummySearch:
     def search(self, query):
         raise NotImplementedError
@@ -50,3 +55,30 @@ class ClownDB(DummySearch):
         sim = cosine_similarity(query_embeds, self.embeds_arr)
         top_indices = np.argsort(-sim[0])[:top_n]
         return [row.to_dict() for _, row in self.data.iloc[top_indices].iterrows()]
+
+    
+class NeuralSearcher(DummySearch):
+    def __init__(
+        self, 
+        collection_name, 
+        model_name='distiluse-base-multilingual-cased-v1',
+        qdrant_url="http://localhost:6333",
+        device='cuda'
+    ):
+        self.collection_name = collection_name
+        self.model = SentenceTransformer(model_name, device=device)
+        self.qdrant_client = QdrantClient(qdrant_url)
+        
+    def search(self, text: str):
+        vector = self.model.encode(text).tolist()
+
+        search_result = self.qdrant_client.search(
+            collection_name=self.collection_name,
+            query_vector=vector,
+            query_filter=None,
+            limit=10,
+        )
+        # `search_result` contains found vector ids with similarity scores along with the stored payload
+        # In this function we are interested in payload only
+        payloads = [hit.payload for hit in search_result]
+        return payloads

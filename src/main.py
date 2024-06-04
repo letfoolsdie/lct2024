@@ -23,10 +23,17 @@ app.add_middleware(
 )
 
 # search_engine = engines.ConstantDB()
-search_engine = engines.ClownDB(
-    "data/yappy_hackaton_2024_400k.csv",
-    "data/embeds_countVectorzer_1-1_word_description.joblib",
-    "data/countVectorizer_1-1_word.joblib"
+# search_engine = engines.ClownDB(
+#     "data/yappy_hackaton_2024_400k.csv",
+#     "data/embeds_countVectorzer_1-1_word_description.joblib",
+#     "data/countVectorizer_1-1_word.joblib"
+# )
+
+search_engine = engines.NeuralSearcher(
+    collection_name="lct_description",
+    model_name='distiluse-base-multilingual-cased-v1',
+    qdrant_url="http://localhost:6333",
+    device='cuda'
 )
 
 @app.get("/search")
