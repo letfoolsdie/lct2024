@@ -8,6 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import torch
 from qdrant_client import QdrantClient
 from sentence_transformers import SentenceTransformer
+from transformers import CLIPProcessor, CLIPModel
 
 
 class DummySearch:
@@ -80,5 +81,37 @@ class NeuralSearcher(DummySearch):
         )
         # `search_result` contains found vector ids with similarity scores along with the stored payload
         # In this function we are interested in payload only
+        payloads = [hit.payload for hit in search_result]
+        return payloads
+
+
+class CLIPSearcher(DummySearch):
+    def __init__(
+        self, 
+        collection_name,
+        qdrant_url="http://localhost:6333",
+    ):
+        self.collection_name = collection_name
+        # Initialize encoder model
+        self.model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+        self.processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+        # initialize Qdrant client
+        self.qdrant_client = QdrantClient(qdrant_url)
+        
+    def search(self, text: str):
+        text_inp = self.processor(
+            text = [text], images=None, return_tensors="pt"
+        )
+        text_emb = self.model.get_text_features(**text_inp).detach().numpy()[0]
+
+        # Use `vector` for search for closest vectors in the collection
+        search_result = self.qdrant_client.search(
+            collection_name=self.collection_name,
+            query_vector=text_emb,
+            query_filter=None,  # If you don't want any filters for now
+            limit=10,  # 5 the most closest results is enough
+        )
+        # `search_result` contains found vector ids with similarity scores along with the stored payload
+        # In this function you are interested in payload only
         payloads = [hit.payload for hit in search_result]
         return payloads

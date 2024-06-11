@@ -29,11 +29,15 @@ app.add_middleware(
 #     "data/countVectorizer_1-1_word.joblib"
 # )
 
-search_engine = engines.NeuralSearcher(
-    collection_name="lct_description",
-    model_name='distiluse-base-multilingual-cased-v1',
-    qdrant_url="http://localhost:6333",
-    device='cuda'
+# search_engine = engines.NeuralSearcher(
+#     collection_name="lct_clip",
+#     model_name='distiluse-base-multilingual-cased-v1',
+#     qdrant_url="http://localhost:6333",
+#     device='cuda'
+# )
+
+search_engine = engines.CLIPSearcher(
+    collection_name="lct_clip"
 )
 
 @app.get("/search")
