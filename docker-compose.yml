@@ -1,0 +1,37 @@
+# used for development/testing
+version: '3'
+services:
+  service_indexer:
+    image: service_indexer
+    build:
+      context: .
+    runtime: nvidia
+    network_mode: 'bridge'
+    volumes:
+      - ${PROJECT_PATH}:/app
+    command: bash -c "python3 /app/run_search.py"
+    ports:
+      - 8000:8001
+    environment:
+      CUDA_VISIBLE_DEVICES: ${CUDA_VISIBLE_DEVICES:-0}
+  service_index_db:
+      image: qdrant/qdrant
+      network_mode: 'bridge'
+      volumes:
+        - ${PROJECT_PATH}/qdrant_storage:/app/qdrant/storage
+      ports:
+        - 6333:6333
+        - 6334:6334
+  # service_searcher:
+  #     image: service_searcher
+  #     build:
+  #       context: .
+  #     runtime: nvidia
+  #     network_mode: 'bridge'
+  #     volumes:
+  #       - ${PROJECT_PATH}:/app
+  #     command: bash -c "python3 /app/run_search.py"
+  #     ports:
+  #       - 8000:8002
+  #     environment:
+  #       CUDA_VISIBLE_DEVICES: ${CUDA_VISIBLE_DEVICES:-0}
