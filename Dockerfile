@@ -9,7 +9,7 @@ RUN apt-get update \
     && apt-get clean
 
 RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-RUN pip3 install transformers[torch] qdrant-client fastapi
+RUN pip3 install transformers[torch] qdrant-client fastapi sentence-transformers sacremoses
 
 WORKDIR /app
 

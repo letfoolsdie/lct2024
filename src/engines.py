@@ -7,6 +7,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 import torch
 from qdrant_client import QdrantClient
+from qdrant_client.models import PointStruct
 from sentence_transformers import SentenceTransformer
 from transformers import CLIPProcessor, CLIPModel
 
@@ -115,3 +116,20 @@ class CLIPSearcher(DummySearch):
         # In this function you are interested in payload only
         payloads = [hit.payload for hit in search_result]
         return payloads
+    
+    def add(self, image: np.ndarray, discription: str, url: str):
+        inputs = self.processor(images=[image], return_tensors="pt")
+        image_feature = self.model.get_image_features(**inputs).detach().numpy()[0]
+
+        result = self.qdrant_client.upsert(
+            collection_name=self.collection_name,
+            points=[
+                PointStruct(
+                    id=abs(hash(discription)),
+                    vector=image_feature.tolist(),
+                    payload={"discription": discription, "link": url}
+                )
+            ]
+        )
+
+        return str(result.status)

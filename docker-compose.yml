@@ -9,11 +9,26 @@ services:
     network_mode: 'bridge'
     volumes:
       - ${PROJECT_PATH}:/app
-    command: bash -c "python3 /app/run_search.py"
+    command: bash -c "fastapi run /app/src/run_indexer.py"
     ports:
-      - 8000:8001
+      - 8002:8002
     environment:
       CUDA_VISIBLE_DEVICES: ${CUDA_VISIBLE_DEVICES:-0}
+
+  service_searcher:
+    image: service_searcher
+    build:
+      context: .
+    runtime: nvidia
+    network_mode: 'bridge'
+    volumes:
+      - ${PROJECT_PATH}:/app
+    command: bash -c "fastapi run /app/src/main.py"
+    ports:
+      - 8001:8001
+    environment:
+      CUDA_VISIBLE_DEVICES: ${CUDA_VISIBLE_DEVICES:-0}
+
   service_index_db:
       image: qdrant/qdrant
       network_mode: 'bridge'
@@ -22,16 +37,3 @@ services:
       ports:
         - 6333:6333
         - 6334:6334
-  # service_searcher:
-  #     image: service_searcher
-  #     build:
-  #       context: .
-  #     runtime: nvidia
-  #     network_mode: 'bridge'
-  #     volumes:
-  #       - ${PROJECT_PATH}:/app
-  #     command: bash -c "python3 /app/run_search.py"
-  #     ports:
-  #       - 8000:8002
-  #     environment:
-  #       CUDA_VISIBLE_DEVICES: ${CUDA_VISIBLE_DEVICES:-0}
