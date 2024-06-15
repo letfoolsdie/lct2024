@@ -141,7 +141,7 @@ class CLIPSearcher(DummySearch):
                 PointStruct(
                     id=abs(hash(discription)),
                     vector=image_feature.tolist(),
-                    payload={"discription": discription, "link": url}
+                    payload={"description": discription, "link": url}
                 )
             ]
         )

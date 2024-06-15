@@ -4,6 +4,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from autocompleter import Autocompleler
+from autocompleter import Trie
+
 import engines
 
 
@@ -44,6 +47,7 @@ search_engine = engines.CLIPSearcher(
 
 @app.get("/search")
 async def search(query: str):
+    Autocompleler.save_new_query(query)
     return search_engine.search(query)
 
 
