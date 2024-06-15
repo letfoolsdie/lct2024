@@ -12,6 +12,9 @@ from sentence_transformers import SentenceTransformer
 from transformers import CLIPProcessor, CLIPModel
 from transformers import FSMTForConditionalGeneration, FSMTTokenizer
 
+import os
+os.environ['HF_HOME'] = '/app/cache/'
+
 
 class DummySearch:
     def search(self, query):
@@ -91,7 +94,7 @@ class CLIPSearcher(DummySearch):
     def __init__(
         self, 
         collection_name,
-        qdrant_url="http://localhost:6333",
+        qdrant_url="http://127.0.0.1:6333",
         device='cuda'
     ):
         self.device = device

@@ -1,3 +1,5 @@
+#from opencv_fixer import AutoFix; AutoFix()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -6,6 +8,8 @@ from transformers import FSMTForConditionalGeneration, FSMTTokenizer
 import engines
 import urllib.request
 import cv2
+import os
+import ffmpegcv
 
 
 mname = "facebook/wmt19-ru-en"
@@ -17,8 +21,8 @@ app = FastAPI()
 
 origins = [
     "http://localhost",
-    "http://localhost:8002",
-    "http://127.0.0.1:8002",
+    "http://localhost:8081",
+    "http://127.0.0.1:8001",
     "*"
 ]
 
@@ -35,19 +39,20 @@ clip_engine = engines.CLIPSearcher(
 )
 
 def get_first_frame(name: str):
-    cap = cv2.VideoCapture(name)
+    cap = ffmpegcv.VideoCapture(name)
     _, frame = cap.read()
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+    os.remove(name)
     return frame
 
 
 @app.get("/add")
 async def add(url: str, disc: str):
-    tmp_name = str(abs(hash(url)))
+    tmp_name = "tmp_"+str(abs(hash(url)))
     urllib.request.urlretrieve(url, tmp_name + ".mp4")
     frame = get_first_frame(tmp_name + ".mp4")
     status = clip_engine.add(frame, discription=disc, url=url)
     return {"status": status}
 
 
-app.mount("/", StaticFiles(directory="front", html=True), name="static")
+#app.mount("/", StaticFiles(directory="/app/src/front", html=True), name="static")
