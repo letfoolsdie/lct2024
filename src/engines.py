@@ -92,10 +92,12 @@ class CLIPSearcher(DummySearch):
         self, 
         collection_name,
         qdrant_url="http://localhost:6333",
+        device='cuda'
     ):
+        self.device = device
         traslator_name = "facebook/wmt19-ru-en"
         self.translate_tokenizer = FSMTTokenizer.from_pretrained(traslator_name)
-        self.translate_model = FSMTForConditionalGeneration.from_pretrained(traslator_name)
+        self.translate_model = FSMTForConditionalGeneration.from_pretrained(traslator_name).to(self.device)
 
         self.collection_name = collection_name
         # Initialize encoder model
@@ -105,7 +107,7 @@ class CLIPSearcher(DummySearch):
         self.qdrant_client = QdrantClient(qdrant_url)
         
     def search(self, text: str):
-        input_ids = self.translate_tokenizer.encode(text, return_tensors="pt")
+        input_ids = self.translate_tokenizer.encode(text, return_tensors="pt").to(self.device)
         outputs = self.translate_model.generate(input_ids)
         text = self.translate_tokenizer.decode(outputs[0], skip_special_tokens=True)
 
