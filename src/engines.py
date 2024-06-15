@@ -10,6 +10,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct
 from sentence_transformers import SentenceTransformer
 from transformers import CLIPProcessor, CLIPModel
+from transformers import FSMTForConditionalGeneration, FSMTTokenizer
 
 
 class DummySearch:
@@ -92,6 +93,10 @@ class CLIPSearcher(DummySearch):
         collection_name,
         qdrant_url="http://localhost:6333",
     ):
+        traslator_name = "facebook/wmt19-ru-en"
+        self.translate_tokenizer = FSMTTokenizer.from_pretrained(traslator_name)
+        self.translate_model = FSMTForConditionalGeneration.from_pretrained(traslator_name)
+
         self.collection_name = collection_name
         # Initialize encoder model
         self.model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
@@ -100,6 +105,10 @@ class CLIPSearcher(DummySearch):
         self.qdrant_client = QdrantClient(qdrant_url)
         
     def search(self, text: str):
+        input_ids = self.translate_tokenizer.encode(text, return_tensors="pt")
+        outputs = self.translate_model.generate(input_ids)
+        text = self.translate_tokenizer.decode(outputs[0], skip_special_tokens=True)
+
         text_inp = self.processor(
             text = [text], images=None, return_tensors="pt"
         )

@@ -1,14 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from transformers import FSMTForConditionalGeneration, FSMTTokenizer
 
 import engines
-
-
-mname = "facebook/wmt19-ru-en"
-tokenizer = FSMTTokenizer.from_pretrained(mname)
-model = FSMTForConditionalGeneration.from_pretrained(mname)
 
 
 app = FastAPI()
@@ -48,11 +42,7 @@ search_engine = engines.CLIPSearcher(
 
 @app.get("/search")
 async def search(query: str):
-    input_ids = tokenizer.encode(query, return_tensors="pt")
-    outputs = model.generate(input_ids)
-    decoded = tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-    return search_engine.search(decoded)
+    return search_engine.search(query)
 
 
 app.mount("/", StaticFiles(directory="front", html=True), name="static")
