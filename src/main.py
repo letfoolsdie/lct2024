@@ -1,3 +1,5 @@
+#from opencv_fixer import AutoFix; AutoFix()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -9,8 +11,8 @@ app = FastAPI()
 
 origins = [
     "http://localhost",
-    "http://localhost:8001",
-    "http://127.0.0.1:8001",
+    "http://localhost:8080",
+    "http://127.0.0.1:8000",
     "*"
 ]
 
@@ -45,4 +47,4 @@ async def search(query: str):
     return search_engine.search(query)
 
 
-app.mount("/", StaticFiles(directory="front", html=True), name="static")
+app.mount("/", StaticFiles(directory="/app/src/front", html=True), name="static")
