@@ -25,6 +25,7 @@ python ./src/search_gradio.py
 ### API Docs
 
 https://github.com/letfoolsdie/lct2024/blob/main/api_docs.md
+pdf-формат https://disk.yandex.ru/i/tWVCIUXtZpd1YA
 
 ### Гипотезы, которые проверялись
 
