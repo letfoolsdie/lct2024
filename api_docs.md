@@ -1,7 +1,7 @@
 # API Docs
 
 ### GET /search
-> метод осуществляет поиск видеороликов по текстовому описанию (не более 10 роликов)
+> метод осуществляет поиск видеороликов по текстовому запросу (не более 10 роликов)
 
 Параметры
 
@@ -11,7 +11,7 @@ query: str - текст запроса
 #### Пример запроса
 
     curl -X 'GET' \
-    'http://172.20.9.14:8000/search?query=football' \
+    'http://ip_addr:8000/search?query=football' \
     -H 'accept: application/json'
 
 #### Пример ответа
@@ -32,7 +32,7 @@ query: str - текст запроса
 
 Параметры
 
-url: str - прямая ссылка до видеоролика в формате .mp4 (формат сжатия дожен поддерживаться ffmpeg)
+url: str - прямая ссылка до видеоролика в формате .mp4 (формат сжатия должен поддерживаться ffmpeg)
 
 desc: str - описание видеоролика (записывается в базу и передается при выдаче в поле description)
 
@@ -40,7 +40,7 @@ desc: str - описание видеоролика (записывается в
 
 
     curl -X 'POST' \
-    'http://172.20.9.14:8001/index?url=https%3A%2F%2Fcdn-st.rutubelist.ru%2Fmedia%2Fa3%2F9f%2F2352de2748b3868df583d51a402b%2Ffhd.mp4&desc=man%20eat%20potatoes' \
+    'http://ip_addr:8001/index?url=https%3A%2F%2Fcdn-st.rutubelist.ru%2Fmedia%2Fa3%2F9f%2F2352de2748b3868df583d51a402b%2Ffhd.mp4&desc=man%20eat%20potatoes' \
     -H 'accept: application/json' \
     -d ''
 
@@ -62,7 +62,7 @@ pref: str - префикс для поиска
 #### Пример запроса
 
     curl -X 'GET' \
-    'http://172.20.9.14:8002/search_prefix?pref=%D0%BC%D1%83%D0%B6' \
+    'http://ip_addr:8002/search_prefix?pref=%D0%BC%D1%83%D0%B6' \
     -H 'accept: application/json'
 
 #### Пример ответа
@@ -74,3 +74,6 @@ pref: str - префикс для поиска
             "мужские кальсоны"
         ]
     }
+
+
+*обратите внимание, что все ручки запущенны на разных портах*
