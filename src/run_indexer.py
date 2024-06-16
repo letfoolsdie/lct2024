@@ -46,12 +46,12 @@ def get_first_frame(name: str):
     return frame
 
 
-@app.get("/add")
-async def add(url: str, disc: str):
+@app.post("/index")
+async def index(url: str, desc: str):
     tmp_name = "tmp_"+str(abs(hash(url)))
     urllib.request.urlretrieve(url, tmp_name + ".mp4")
     frame = get_first_frame(tmp_name + ".mp4")
-    status = clip_engine.add(frame, discription=disc, url=url)
+    status = clip_engine.add(frame, description=desc, url=url)
     return {"status": status}
 
 

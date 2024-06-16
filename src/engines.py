@@ -131,7 +131,7 @@ class CLIPSearcher(DummySearch):
         payloads = [hit.payload for hit in search_result]
         return payloads
     
-    def add(self, image: np.ndarray, discription: str, url: str):
+    def add(self, image: np.ndarray, description: str, url: str):
         inputs = self.processor(images=[image], return_tensors="pt")
         image_feature = self.model.get_image_features(**inputs).detach().numpy()[0]
 
@@ -139,9 +139,9 @@ class CLIPSearcher(DummySearch):
             collection_name=self.collection_name,
             points=[
                 PointStruct(
-                    id=abs(hash(discription)),
+                    id=abs(hash(description)),
                     vector=image_feature.tolist(),
-                    payload={"description": discription, "link": url}
+                    payload={"description": description, "link": url}
                 )
             ]
         )
