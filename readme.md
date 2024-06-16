@@ -1,14 +1,36 @@
-### Инструкция )))
+## Docs
 
- - Готовим эмбеды из описания видео для qdrant. Пример в ноутбуке qdrant_lct_baseline.ipynb.
- - Запускаем qdrant: `docker run -p 6333:6333 -p 6334:6334     -v $(pwd)/qdrant_storage:/qdrant/storage:z  qdrant/qdrant`
- - Далее запускаем fastapi сервер:
-    ```
-    cd src
-    fastapi dev main.py
+### Запуск backend
 
-    http://127.0.0.1:8000/search?query=test
-    ```
-    Для прода (чтобы сервис был доступен не только локально) заменить `fastapi dev main.py` на `fastapi run`.
-   
-    UI должен быть доступен по http://127.0.0.1:8000/
+```bash
+git clone https://github.com/letfoolsdie/lct2024.git
+cd lct2024
+sudo docker compose up
+```
+
+### Запуск front
+
+```bash
+python -m pip install gradio
+python ./src/search_gradio.py
+```
+на экране появится ссылка на UI (подобная этой https://c2078fcb4b89118aa6.gradio.live)
+
+Первый запуска может занимать 5-10 минут, последующие значительно быстрее
+
+### API Docs
+
+https://github.com/letfoolsdie/lct2024/blob/main/api_docs.md
+
+### Гипотезы, которые проверялись
+
+работа с несколькими источниками данных и последующая их агрегация 
+
+* Video2Text/Image2Text models (blip-2, Video-LLaMA, git-base, Tag2Text, etc)
+* CLIP/ViClip model
+* OCR (easyocr, paddleocr)
+* Speech2Text (Wisper)
+* text embedder (BERT multilingual base)
+* translator (FSMT)
+
+
