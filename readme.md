@@ -1,5 +1,9 @@
 ## Docs
 
+### Демка
+
+Проиндексировано 110к видеороликов, полный список можно найти тут https://disk.yandex.ru/d/ahc1qzZUwxnMWA
+
 ### Запуск backend
 
 ```bash
