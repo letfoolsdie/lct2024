@@ -30,7 +30,7 @@ python ./src/search_gradio.py
 
 search метод: translator (86 ms) + clip (6 ms) + index (3 ms) = 95 ms
 
-index метод: 
+index метод: 250 ms
 
 ### API Docs
 
