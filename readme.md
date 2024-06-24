@@ -38,8 +38,6 @@ index метод: 250 ms
 
 https://github.com/letfoolsdie/lct2024/blob/main/api_docs.md
 
-pdf-формат https://disk.yandex.ru/i/tWVCIUXtZpd1YA
-
 ### Гипотезы, которые проверялись
 
 работа с несколькими источниками данных и последующая их агрегация 
