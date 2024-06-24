@@ -29,6 +29,7 @@ python ./src/search_gradio.py
 Сервер: NVIDIA GeForce RTX 4090; Intel i7-13700KF; Ubuntu 22.04.4 LTS
 
 search метод: translator (86 ms) + clip (6 ms) + index (3 ms) = 95 ms
+
 index метод: 
 
 ### API Docs
