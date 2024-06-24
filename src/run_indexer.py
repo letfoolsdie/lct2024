@@ -35,15 +35,36 @@ app.add_middleware(
 )
 
 clip_engine = engines.CLIPSearcher(
-    collection_name="lct_clip"
+    collection_name="lct_clip_ext"
 )
 
+
 def get_first_frame(name: str):
-    cap = ffmpegcv.VideoCapture(name)
-    _, frame = cap.read()
-    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+    cap = cv2.VideoCapture(name)
+    
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # Frame indices for first, middle, and last frames
+    frames_to_capture = [0, total_frames // 2, total_frames - 1]
+    images = []
+    
+    # Read specific frames
+    for frame_index in frames_to_capture:
+        # Set the current frame position
+        cap.set(cv2.CAP_PROP_POS_FRAMES, frame_index)
+        
+        # Read the frame
+        ret, frame = cap.read()
+        if ret:
+            images.append(frame)
+        else:
+            break
+
+    cap.release()
+
+    images =[cv2.cvtColor(img, cv2.COLOR_RGB2BGR) for img in images]
     os.remove(name)
-    return frame
+    return images
 
 
 @app.post("/index")

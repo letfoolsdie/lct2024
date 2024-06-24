@@ -42,7 +42,7 @@ app.add_middleware(
 # )
 
 search_engine = engines.CLIPSearcher(
-    collection_name="lct_clip"
+    collection_name="lct_clip_ext"
 )
 
 @app.get("/search")

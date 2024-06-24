@@ -131,25 +131,37 @@ class CLIPSearcher(DummySearch):
             collection_name=self.collection_name,
             query_vector=text_emb,
             query_filter=None,  # If you don't want any filters for now
-            limit=10,  # 5 the most closest results is enough
+            limit=30,
         )
         # `search_result` contains found vector ids with similarity scores along with the stored payload
         # In this function you are interested in payload only
         payloads = [hit.payload for hit in search_result]
+        
+        # filter duplicate urls:
+        duplicates_filter = set()
+        filt_payloads = list()
+        for p in payloads:
+            if p['link'] not in duplicates_filter:
+                filt_payloads.append(p)
+                duplicates_filter.update([p['link']])
+
+        payloads = filt_payloads[:10]
+        
         return payloads
     
     def add(self, image: np.ndarray, description: str, url: str):
-        inputs = self.processor(images=[image], return_tensors="pt")
-        image_feature = self.model.get_image_features(**inputs).detach().numpy()[0]
+        inputs = self.processor(images=image, return_tensors="pt")
+        image_feature = self.model.get_image_features(**inputs).detach().numpy()
 
         result = self.qdrant_client.upsert(
             collection_name=self.collection_name,
             points=[
                 PointStruct(
                     id=abs(hash(description)),
-                    vector=image_feature.tolist(),
+                    vector=img_feat.tolist(),
                     payload={"description": description, "link": url}
                 )
+                for img_feat in image_feature
             ]
         )
 
