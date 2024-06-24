@@ -39,32 +39,36 @@ clip_engine = engines.CLIPSearcher(
 )
 
 
-def get_first_frame(name: str):
-    cap = cv2.VideoCapture(name)
+def get_first_frame(video_path: str, max_frames=2000):
+    cap = cv2.VideoCapture(video_path)
     
-    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-
-    # Frame indices for first, middle, and last frames
-    frames_to_capture = [0, total_frames // 2, total_frames - 1]
+    if not cap.isOpened():
+        print("Error: Could not open video.")
+        return []
+    
     images = []
+    frame_cnt = 0
     
-    # Read specific frames
-    for frame_index in frames_to_capture:
-        # Set the current frame position
-        cap.set(cv2.CAP_PROP_POS_FRAMES, frame_index)
-        
-        # Read the frame
+    while cap.isOpened():
+        # Capture frame-by-frame
         ret, frame = cap.read()
+        
         if ret:
             images.append(frame)
         else:
             break
-
+        
+        frame_cnt += 1
+        if frame_cnt >= max_frames:
+            break
+    
     cap.release()
+    
+    frames_to_capture = [0, frame_cnt // 2, frame_cnt - 1]
 
-    images =[cv2.cvtColor(img, cv2.COLOR_RGB2BGR) for img in images]
-    os.remove(name)
-    return images
+    os.remove(video_path)
+    
+    return [cv2.cvtColor(images[index], cv2.COLOR_RGB2BGR) for index in frames_to_capture]
 
 
 @app.post("/index")
