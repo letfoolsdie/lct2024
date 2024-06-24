@@ -11,6 +11,7 @@ from qdrant_client.models import PointStruct
 from sentence_transformers import SentenceTransformer
 from transformers import CLIPProcessor, CLIPModel
 from transformers import FSMTForConditionalGeneration, FSMTTokenizer
+from transformers import T5ForConditionalGeneration, T5Tokenizer
 
 import os
 os.environ['HF_HOME'] = '/app/cache/'
@@ -98,9 +99,9 @@ class CLIPSearcher(DummySearch):
         device='cuda'
     ):
         self.device = device
-        traslator_name = "facebook/wmt19-ru-en"
-        self.translate_tokenizer = FSMTTokenizer.from_pretrained(traslator_name)
-        self.translate_model = FSMTForConditionalGeneration.from_pretrained(traslator_name).to(self.device)
+        traslator_name = "utrobinmv/t5_translate_en_ru_zh_large_1024"
+        self.translate_tokenizer = T5Tokenizer.from_pretrained(traslator_name)
+        self.translate_model = T5ForConditionalGeneration.from_pretrained(traslator_name).to(self.device)
 
         self.collection_name = collection_name
         # Initialize encoder model
@@ -108,11 +109,17 @@ class CLIPSearcher(DummySearch):
         self.processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
         # initialize Qdrant client
         self.qdrant_client = QdrantClient(qdrant_url)
+
+    def translate(self, text: str):
+        pass
         
     def search(self, text: str):
-        input_ids = self.translate_tokenizer.encode(text, return_tensors="pt").to(self.device)
-        outputs = self.translate_model.generate(input_ids)
-        text = self.translate_tokenizer.decode(outputs[0], skip_special_tokens=True)
+        input_ids = self.translate_tokenizer("translate to en: " + text, return_tensors="pt").to(self.device)
+        outputs = self.translate_model.generate(**input_ids)
+        text = self.translate_tokenizer.batch_decode(outputs, skip_special_tokens=True)[0].lower()
+        print()
+        print(text)
+        print()
 
         text_inp = self.processor(
             text = [text], images=None, return_tensors="pt"

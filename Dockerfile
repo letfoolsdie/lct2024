@@ -13,6 +13,7 @@ RUN apt-get install -y ffmpeg libavformat-dev libavcodec-dev libswscale-dev
 RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 RUN pip3 install transformers[torch] qdrant-client fastapi sentence-transformers sacremoses
 RUN pip3 install opencv-contrib-python==4.8.0.74 ffmpegcv
+RUN pip3 install gradio sentencepiece
 
 WORKDIR /app
 
