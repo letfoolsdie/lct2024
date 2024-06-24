@@ -1,5 +1,7 @@
 ## Docs
 
+![diagrams_image](https://github.com/letfoolsdie/lct2024/assets/15076754/a91eee43-eb91-4c01-8f4e-3ce2d809e15e)
+
 ### Демка
 
 Проиндексировано 110к видеороликов, полный список можно найти тут https://disk.yandex.ru/d/ahc1qzZUwxnMWA
@@ -22,6 +24,13 @@ python ./src/search_gradio.py
 
 Первый запуск может занимать 5-10 минут, последующие значительно быстрее
 
+### Скорость работы
+
+Сервер: NVIDIA GeForce RTX 4090; Intel i7-13700KF; Ubuntu 22.04.4 LTS
+
+search метод: translator (86 ms) + clip (6 ms) + index (3 ms) = 95 ms
+index метод: 
+
 ### API Docs
 
 https://github.com/letfoolsdie/lct2024/blob/main/api_docs.md
@@ -37,6 +46,6 @@ pdf-формат https://disk.yandex.ru/i/tWVCIUXtZpd1YA
 * OCR (easyocr, paddleocr)
 * Speech2Text (Wisper)
 * text embedder (BERT multilingual base)
-* translator (FSMT)
+* translator (FSMT, T5)
 
 
