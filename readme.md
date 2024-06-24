@@ -2,7 +2,7 @@
 
 ![diagrams_image](https://github.com/letfoolsdie/lct2024/assets/15076754/a91eee43-eb91-4c01-8f4e-3ce2d809e15e)
 
-Общий документ https://disk.yandex.ru/i/tpB3kKTms3E3zA
+Общий документ [https://disk.yandex.ru/i/tpB3kKTms3E3zA](https://disk.yandex.ru/i/zWs2Uu9MVbW5Lg)
 
 ### Демка
 
